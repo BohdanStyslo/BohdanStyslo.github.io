@@ -2,8 +2,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
     const tg = window.Telegram.WebApp;
     const user = tg.initDataUnsafe.user;
     const TST_Uid = '398119882';
-    document.getElementById('username').textContent ='user.first_name';
-    document.getElementById('userid').textContent = 'user.id';
+    document.getElementById('username').textContent = user.first_name;
+    document.getElementById('userid').textContent = user.id;
 
     // Подключаем axios
     const axios = window.axios;
@@ -18,7 +18,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
             "Properties": {
                 "Locale": "en-US",
                 "Location": "47.623098, -122.330184",
-                "Selector": `Filter(Планування, [Водій_TGid] = ${TST_Uid})`,
+                "Selector": `ORDERBY(Filter(Планування, [Водій_TGid] = '${TST_Uid}'), [ID], true)`,
                 "Timezone": "Pacific Standard Time",
                 "UserSettings": {
                     "Option 1": "value1",
@@ -55,7 +55,10 @@ window.addEventListener('DOMContentLoaded', (event) => {
                     button.setAttribute('data-target', `#collapse${index}`);
                     button.setAttribute('aria-expanded', 'false');
                     button.setAttribute('aria-controls', `collapse${index}`);
-                    button.textContent = `Запись ${index + 1}`;
+
+                    console.log(rowData);
+
+                    button.textContent = `${rowData.Дата} (${rowData.Період})`; // `Замовлення ${index + 1}`;
                     cardHeader.appendChild(button);
 
                     const collapse = document.createElement('div');
