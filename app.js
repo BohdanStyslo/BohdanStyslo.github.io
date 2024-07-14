@@ -2,8 +2,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
     const tg = window.Telegram.WebApp;
     const user = tg.initDataUnsafe.user;
     const TST_Uid = '398119882';
-    document.getElementById('username').textContent = 'user.first_name';
-    document.getElementById('userid').textContent = 'user.id';
+    document.getElementById('username').textContent = user.first_name;
+    document.getElementById('userid').textContent = user.id;
 
     // Подключаем axios
     const axios = window.axios;
@@ -19,7 +19,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
             "Properties": {
                 "Locale": "en-US",
                 "Location": "47.623098, -122.330184",
-                "Selector": `Filter(Планування, [Водій_TGid] = ${TST_Uid})`,
+                "Selector": `Filter(Планування, [Водій_TGid] = ${user.id})`,
                 "Timezone": "Pacific Standard Time",
                 "UserSettings": {
                     "Option 1": "value1",
