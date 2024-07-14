@@ -1,5 +1,9 @@
 let tg = window.Telegram.WebApp;
+
 tg.expand();
+
+tg.MainButton.textColor = '#FFFFFF';
+tg.MainButton.color = '#2cab37';
 
 
 let p = document.createElement("p");
@@ -61,3 +65,51 @@ document.addEventListener('DOMContentLoaded', fetchData);
                 tableBody.appendChild(tr);
             });
         }
+
+
+
+
+  // Функция для запроса данных из AppSheet
+    async function fetchAppSheetData() {
+        const apiUrl = 'https://api.appsheet.com/api/v2/apps/c886f36a-45a4-496d-8790-b02bb64a3653/tables/Verification/Action';
+        const apiKey = apiToken;
+        const num = number; // Измените на нужное значение
+
+        const requestData = {
+            "Action": "Find",
+            "Properties": {
+                "Locale": "en-US",
+                "Location": "47.623098, -122.330184",
+                "Selector": `Filter('Verification', [Number] = '36627007/100074-24')`,
+                "Timezone": "Pacific Standard Time",
+                "UserSettings": {
+                    "Option 1": "value1",
+                    "Option 2": "value2"
+                }
+            },
+            "Rows": []
+        };
+
+        try {
+            const response = await fetch(`${apiUrl}?applicationAccessKey=${apiKey}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            });
+
+Logger.log(response);
+
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+
+            const data = await response.json();
+            const value = data.Rows[0].YourColumnName; // Измените на имя вашей колонки
+            document.getElementById('appsheet-value').textContent = value;
+        } catch (error) {
+            console.error('Ошибка при запросе данных из AppSheet:', error);
+        }
+    }
