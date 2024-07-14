@@ -2,24 +2,23 @@ window.addEventListener('DOMContentLoaded', (event) => {
     const tg = window.Telegram.WebApp;
     const user = tg.initDataUnsafe.user;
     const TST_Uid = '398119882';
-    document.getElementById('username').textContent = user.first_name;
-    document.getElementById('userid').textContent = user.id;
+    document.getElementById('username').textContent ='user.first_name';
+    document.getElementById('userid').textContent = 'user.id';
 
     // Подключаем axios
     const axios = window.axios;
 
-    // Функция для запроса данных из AppSheet
+    // Функция для запроса данных из AppSheet и отображения в компактных элементах
     async function fetchAppSheetData() {
         const apiUrl = 'https://api.appsheet.com/api/v2/apps/9b63e70e-415c-4194-bcb2-8b660487f818/tables/Планування/Action';
         const apiKey = 'V2-SvmY9-btgoD-NhsQX-WZVcy-2izI3-qhS9D-feVkP-6bexN';
-       
 
         const requestData = {
             "Action": "Find",
             "Properties": {
                 "Locale": "en-US",
                 "Location": "47.623098, -122.330184",
-                "Selector": `Filter(Планування, [Водій_TGid] = ${user.id})`,
+                "Selector": `Filter(Планування, [Водій_TGid] = '${TST_Uid}')`,
                 "Timezone": "Pacific Standard Time",
                 "UserSettings": {
                     "Option 1": "value1",
@@ -36,44 +35,55 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 }
             });
 
-          
             const data = response.data;
-
-  console.log(data);
-
             if (data && data.length > 0) {
-                // Генерация HTML для таблицы
-                const table = document.createElement('table');
-                table.classList.add('appsheet-table');
+                const accordion = document.createElement('div');
+                accordion.classList.add('accordion');
 
-                // Создание заголовка таблицы
-                const headerRow = document.createElement('tr');
-                for (const key in data[0]) {
-                    if (data[0].hasOwnProperty(key)) {
-                        const th = document.createElement('th');
-                        th.textContent = key;
-                        headerRow.appendChild(th);
-                    }
-                }
-                table.appendChild(headerRow);
+                data.forEach((rowData, index) => {
+                    const card = document.createElement('div');
+                    card.classList.add('card');
 
-                // Создание строк данных
-                data.forEach(rowData => {
-                    const row = document.createElement('tr');
+                    const cardHeader = document.createElement('div');
+                    cardHeader.classList.add('card-header');
+                    cardHeader.id = `heading${index}`;
+
+                    const button = document.createElement('button');
+                    button.classList.add('btn', 'btn-link', 'collapsed');
+                    button.setAttribute('type', 'button');
+                    button.setAttribute('data-toggle', 'collapse');
+                    button.setAttribute('data-target', `#collapse${index}`);
+                    button.setAttribute('aria-expanded', 'false');
+                    button.setAttribute('aria-controls', `collapse${index}`);
+                    button.textContent = `Запись ${index + 1}`;
+                    cardHeader.appendChild(button);
+
+                    const collapse = document.createElement('div');
+                    collapse.id = `collapse${index}`;
+                    collapse.classList.add('collapse');
+                    collapse.setAttribute('aria-labelledby', `heading${index}`);
+                    collapse.setAttribute('data-parent', '.accordion');
+
+                    const cardBody = document.createElement('div');
+                    cardBody.classList.add('card-body');
+
                     for (const key in rowData) {
                         if (rowData.hasOwnProperty(key)) {
-                            const cell = document.createElement('td');
-                            cell.textContent = rowData[key];
-                            row.appendChild(cell);
+                            const p = document.createElement('p');
+                            p.textContent = `${key}: ${rowData[key]}`;
+                            cardBody.appendChild(p);
                         }
                     }
-                    table.appendChild(row);
+
+                    collapse.appendChild(cardBody);
+                    card.appendChild(cardHeader);
+                    card.appendChild(collapse);
+                    accordion.appendChild(card);
                 });
 
-                // Очистка контейнера и добавление таблицы
                 const container = document.querySelector('.container');
                 container.innerHTML = ''; // Очистка контейнера
-                container.appendChild(table);
+                container.appendChild(accordion);
             } else {
                 // Если данных нет
                 const noDataMessage = document.createElement('p');
