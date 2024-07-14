@@ -70,13 +70,22 @@ window.addEventListener('DOMContentLoaded', (event) => {
                     const cardBody = document.createElement('div');
                     cardBody.classList.add('card-body');
 
-                    for (const key in rowData) {
+            /*       for (const key in rowData) {
                         if (rowData.hasOwnProperty(key)) {
                             const p = document.createElement('p');
                             p.textContent = `${key}: ${rowData[key]}`;
                             cardBody.appendChild(p);
                         }
                     }
+*/
+
+const fieldsToShow = ['Лейбла', `Назва об'єкта`, 'Дата', 'Фірма замовника'];
+
+fieldsToShow.forEach(field => {
+    const p = document.createElement('p');
+    p.textContent = `${field}: ${rowData[field]}`;
+    cardBody.appendChild(p);
+});
 
                     collapse.appendChild(cardBody);
                     card.appendChild(cardHeader);
