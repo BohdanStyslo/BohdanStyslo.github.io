@@ -46,20 +46,14 @@
         }
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', (event) => {
-            const tg = window.Telegram.WebApp;
-            const user = tg.initDataUnsafe.user;
-            document.getElementById('username').textContent = user.first_name;
-            document.getElementById('userid').textContent = user.id;
-        });
-    </script>
+    <script src="script.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Добро пожаловать в Telegram Mini WebApp!</h1>
         <p>Имя пользователя: <span id="username"></span></p>
         <p>ID пользователя: <span id="userid"></span></p>
+        <p>Значение из AppSheet: <span id="appsheet-value"></span></p>
         <button class="button" onclick="alert('Кнопка нажата!')">Нажми меня</button>
     </div>
 </body>
