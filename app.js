@@ -1,86 +1,25 @@
-let tg = window.Telegram.WebApp;
+window.addEventListener('DOMContentLoaded', (event) => {
+    const tg = window.Telegram.WebApp;
+    const user = tg.initDataUnsafe.user;
+ //   const TST_Uid = '398119882';
+    document.getElementById('username').textContent = user.first_name;
+    document.getElementById('userid').textContent = user.id;
 
-tg.expand();
+    // Подключаем axios
+    const axios = window.axios;
 
-tg.MainButton.textColor = '#FFFFFF';
-tg.MainButton.color = '#2cab37';
-
-
-let p = document.createElement("p");
-p.innerText = `${tg.initDataUnsafe.user.first_name}
-${tg.initDataUnsafe.user.last_name}
-${tg.initDataUnsafe.user.id}`;
-
-usercard.appendChild(p);
-
-
-
-document.addEventListener('DOMContentLoaded', fetchData);
-
-        async function fetchData() {
-            const driverId = 2; // Фіксоване значення Driver_Id
-            const url = `https://script.google.com/macros/s/AKfycbweJYaSCuMrDDnNEWJqF9LRHyQ7JaOnjbY5Fh1QfF1CYJ9EoZLZ_PUlV08Te6Z83jhk/exec?Driver_id=${driverId}`;
-
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                const data = await response.json();
-                console.log('Fetched Data:', data);
-                buildTable(data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        }
-
-        function buildTable(data) {
-            const tableHeader = document.getElementById('tableHeader');
-            const tableBody = document.getElementById('tableBody');
-
-            tableHeader.innerHTML = '';
-            tableBody.innerHTML = '';
-
-            if (data.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="17">No records found</td></tr>';
-                return;
-            }
-
-            // Create header row
-            const headers = Object.keys(data[0]);
-            headers.forEach(header => {
-                const th = document.createElement('th');
-                th.textContent = header;
-                tableHeader.appendChild(th);
-            });
-
-            // Create body rows
-            data.forEach(row => {
-                const tr = document.createElement('tr');
-                headers.forEach(header => {
-                    const td = document.createElement('td');
-                    td.textContent = row[header];
-                    tr.appendChild(td);
-                });
-                tableBody.appendChild(tr);
-            });
-        }
-
-
-
-
-  // Функция для запроса данных из AppSheet
+    // Функция для запроса данных из AppSheet
     async function fetchAppSheetData() {
-        const apiUrl = 'https://api.appsheet.com/api/v2/apps/c886f36a-45a4-496d-8790-b02bb64a3653/tables/Verification/Action';
-        const apiKey = apiToken;
-        const num = number; // Измените на нужное значение
+        const apiUrl = 'https://api.appsheet.com/api/v2/apps/9b63e70e-415c-4194-bcb2-8b660487f818/tables/Планування/Action';
+        const apiKey = 'V2-SvmY9-btgoD-NhsQX-WZVcy-2izI3-qhS9D-feVkP-6bexN';
+       
 
         const requestData = {
             "Action": "Find",
             "Properties": {
                 "Locale": "en-US",
                 "Location": "47.623098, -122.330184",
-                "Selector": `Filter('Verification', [Number] = '36627007/100074-24')`,
+                "Selector": `Filter(Планування, [Водій_TGid] = ${user.id})`,
                 "Timezone": "Pacific Standard Time",
                 "UserSettings": {
                     "Option 1": "value1",
@@ -91,25 +30,61 @@ document.addEventListener('DOMContentLoaded', fetchData);
         };
 
         try {
-            const response = await fetch(`${apiUrl}?applicationAccessKey=${apiKey}`, {
-                method: 'POST',
+            const response = await axios.post(`${apiUrl}?applicationAccessKey=${apiKey}`, requestData, {
                 headers: {
                     'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestData)
+                }
             });
 
-Logger.log(response);
+          
+            const data = response.data;
 
+  console.log(data);
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
+            if (data && data.length > 0) {
+                // Генерация HTML для таблицы
+                const table = document.createElement('table');
+                table.classList.add('appsheet-table');
+
+                // Создание заголовка таблицы
+                const headerRow = document.createElement('tr');
+                for (const key in data[0]) {
+                    if (data[0].hasOwnProperty(key)) {
+                        const th = document.createElement('th');
+                        th.textContent = key;
+                        headerRow.appendChild(th);
+                    }
+                }
+                table.appendChild(headerRow);
+
+                // Создание строк данных
+                data.forEach(rowData => {
+                    const row = document.createElement('tr');
+                    for (const key in rowData) {
+                        if (rowData.hasOwnProperty(key)) {
+                            const cell = document.createElement('td');
+                            cell.textContent = rowData[key];
+                            row.appendChild(cell);
+                        }
+                    }
+                    table.appendChild(row);
+                });
+
+                // Очистка контейнера и добавление таблицы
+                const container = document.querySelector('.container');
+                container.innerHTML = ''; // Очистка контейнера
+                container.appendChild(table);
+            } else {
+                // Если данных нет
+                const noDataMessage = document.createElement('p');
+                noDataMessage.textContent = 'Відсутні замовлення';
+                document.getElementById('appsheet-value').appendChild(noDataMessage);
             }
-
-            const data = await response.json();
-            const value = data.Rows[0].YourColumnName; // Измените на имя вашей колонки
-            document.getElementById('appsheet-value').textContent = value;
         } catch (error) {
             console.error('Ошибка при запросе данных из AppSheet:', error);
         }
     }
+
+    // Вызов функции для получения данных из AppSheet
+    fetchAppSheetData();
+});
