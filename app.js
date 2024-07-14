@@ -18,7 +18,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
             "Properties": {
                 "Locale": "en-US",
                 "Location": "47.623098, -122.330184",
-                "Selector": `Filter(Планування, [Водій_TGid] = '${TST_Uid}')`,
+                "Selector": `Filter(Планування, [Водій_TGid] = ${TST_Uid})`,
                 "Timezone": "Pacific Standard Time",
                 "UserSettings": {
                     "Option 1": "value1",
@@ -87,11 +87,11 @@ window.addEventListener('DOMContentLoaded', (event) => {
             } else {
                 // Если данных нет
                 const noDataMessage = document.createElement('p');
-                noDataMessage.textContent = 'Нет данных для отображения';
+                noDataMessage.textContent = 'Відсутні дані';
                 document.getElementById('appsheet-value').appendChild(noDataMessage);
             }
         } catch (error) {
-            console.error('Ошибка при запросе данных из AppSheet:', error);
+            console.error('Помилка під час отримання даних з AppSheet:', error);
         }
     }
 
