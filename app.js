@@ -1,9 +1,9 @@
 window.addEventListener('DOMContentLoaded', (event) => {
     const tg = window.Telegram.WebApp;
     const user = tg.initDataUnsafe.user;
- //   const TST_Uid = '398119882';
-    document.getElementById('username').textContent = user.first_name;
-    document.getElementById('userid').textContent = user.id;
+    const TST_Uid = '398119882';
+    document.getElementById('username').textContent = 'user.first_name';
+    document.getElementById('userid').textContent = 'user.id';
 
     // Подключаем axios
     const axios = window.axios;
@@ -19,7 +19,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
             "Properties": {
                 "Locale": "en-US",
                 "Location": "47.623098, -122.330184",
-                "Selector": `Filter(Планування, [Водій_TGid] = ${user.id})`,
+                "Selector": `Filter(Планування, [Водій_TGid] = ${TST_Uid})`,
                 "Timezone": "Pacific Standard Time",
                 "UserSettings": {
                     "Option 1": "value1",
@@ -77,7 +77,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
             } else {
                 // Если данных нет
                 const noDataMessage = document.createElement('p');
-                noDataMessage.textContent = 'Відсутні замовлення';
+                noDataMessage.textContent = 'Нет данных для отображения';
                 document.getElementById('appsheet-value').appendChild(noDataMessage);
             }
         } catch (error) {
