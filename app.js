@@ -1,4 +1,17 @@
-        document.addEventListener('DOMContentLoaded', fetchData);
+let tg = window.Telegram.WebApp;
+tg.expand();
+
+
+let p = document.createElement("p");
+p.innerText = `${tg.initDataUnsafe.user.first_name}
+${tg.initDataUnsafe.user.last_name}
+${tg.initDataUnsafe.user.id}`;
+
+usercard.appendChild(p);
+
+
+
+document.addEventListener('DOMContentLoaded', fetchData);
 
         async function fetchData() {
             const driverId = 2; // Фіксоване значення Driver_Id
