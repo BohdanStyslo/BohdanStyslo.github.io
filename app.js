@@ -111,6 +111,13 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
                 const container = document.querySelector('.container');
                 container.innerHTML = ''; // Очистка контейнера
+
+
+                // Создание нового элемента
+                const Label = document.createElement('p');
+                Label.textContent = 'Актуальні замовлення';
+                container.appendChild(Label);
+                
                 container.appendChild(accordion);
             } else {
                 // Если данных нет
