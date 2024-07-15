@@ -83,7 +83,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                             }
         */
 
-                    const fieldsToShow = ['Лейбла', `Назва об'єкта`, 'Дата', 'Фірма замовника', 'Статус'];
+                    const fieldsToShow = ['ID', 'Лейбла', `Назва об'єкта`, 'Дата', 'Фірма замовника', 'Статус'];
 
                     fieldsToShow.forEach(field => {
                         const p = document.createElement('p');
@@ -110,7 +110,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 });
 
                 const container = document.querySelector('.container');
-             //   container.innerHTML = ''; // Очистка контейнера
+                container.innerHTML = ''; // Очистка контейнера
                 container.appendChild(accordion);
             } else {
                 // Если данных нет
@@ -146,7 +146,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 }
             },
             "Rows": [{
-                "ID": recordId,
+                "ID": `${recordId}`,
                 "Статус": "Водій: виконано"
             }]
         };
