@@ -7,6 +7,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
     // Подключаем axios
     const axios = window.axios;
+    const loadingIndicator = document.getElementById('loading-indicator');
+
 
     // Функция для запроса данных из AppSheet и отображения в компактных элементах
     async function fetchAppSheetData() {
@@ -29,6 +31,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
         };
 
         try {
+            loadingIndicator.style.display = 'block'; // Показать индикатор загрузки
+
             const response = await axios.post(`${apiUrl}?applicationAccessKey=${apiKey}`, requestData, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -106,7 +110,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 });
 
                 const container = document.querySelector('.container');
-                container.innerHTML = ''; // Очистка контейнера
+             //   container.innerHTML = ''; // Очистка контейнера
                 container.appendChild(accordion);
             } else {
                 // Если данных нет
@@ -116,6 +120,9 @@ window.addEventListener('DOMContentLoaded', (event) => {
             }
         } catch (error) {
             console.error('Помилка під час отримання даних з AppSheet:', error);
+        }
+        finally {
+            loadingIndicator.style.display = 'none'; // Скрыть индикатор загрузки
         }
     }
 
@@ -139,12 +146,14 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 }
             },
             "Rows": [{
-                "ID": 'recordId',
+                "ID": recordId,
                 "Статус": "Водій: виконано"
             }]
         };
 
         try {
+            loadingIndicator.style.display = 'block'; // Показать индикатор загрузки
+
             const response = await axios.post(`${apiUrl}?applicationAccessKey=${apiKey}`, requestData, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -164,6 +173,9 @@ window.addEventListener('DOMContentLoaded', (event) => {
         } catch (error) {
             console.error('Ошибка при обновлении статуса:', error);
             alert('Ошибка при обновлении статуса');
+        }
+        finally {
+            loadingIndicator.style.display = 'none'; // Скрыть индикатор загрузки
         }
     }
 
