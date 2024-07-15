@@ -70,22 +70,34 @@ window.addEventListener('DOMContentLoaded', (event) => {
                     const cardBody = document.createElement('div');
                     cardBody.classList.add('card-body');
 
-            /*       for (const key in rowData) {
-                        if (rowData.hasOwnProperty(key)) {
-                            const p = document.createElement('p');
-                            p.textContent = `${key}: ${rowData[key]}`;
-                            cardBody.appendChild(p);
-                        }
+                    /*       for (const key in rowData) {
+                                if (rowData.hasOwnProperty(key)) {
+                                    const p = document.createElement('p');
+                                    p.textContent = `${key}: ${rowData[key]}`;
+                                    cardBody.appendChild(p);
+                                }
+                            }
+        */
+
+                    const fieldsToShow = ['Лейбла', `Назва об'єкта`, 'Дата', 'Фірма замовника', 'Статус'];
+
+                    fieldsToShow.forEach(field => {
+                        const p = document.createElement('p');
+                        p.textContent = `${field}: ${rowData[field]}`;
+                        cardBody.appendChild(p);
+                    });
+
+                    if (rowData.Статус !== 'Виконано' && rowData.Статус !== 'Водій: виконано') {
+                        // Добавление кнопки "Виконано"
+                        const doneButton = document.createElement('button');
+                        doneButton.classList.add('btn', 'btn-success');
+                        doneButton.textContent = 'Виконано';
+                        doneButton.addEventListener('click', () => updateStatus(rowData.ID));
+                        cardBody.appendChild(doneButton);
+
                     }
-*/
 
-const fieldsToShow = ['Лейбла', `Назва об'єкта`, 'Дата', 'Фірма замовника'];
 
-fieldsToShow.forEach(field => {
-    const p = document.createElement('p');
-    p.textContent = `${field}: ${rowData[field]}`;
-    cardBody.appendChild(p);
-});
 
                     collapse.appendChild(cardBody);
                     card.appendChild(cardHeader);
@@ -106,6 +118,56 @@ fieldsToShow.forEach(field => {
             console.error('Помилка під час отримання даних з AppSheet:', error);
         }
     }
+
+
+
+
+    // Функция для обновления статуса записи в AppSheet
+    async function updateStatus(recordId) {
+        const apiUrl = 'https://api.appsheet.com/api/v2/apps/9b63e70e-415c-4194-bcb2-8b660487f818/tables/Планування/Action';
+        const apiKey = 'V2-SvmY9-btgoD-NhsQX-WZVcy-2izI3-qhS9D-feVkP-6bexN';
+
+        const requestData = {
+            "Action": "Edit",
+            "Properties": {
+                "Locale": "en-US",
+                "Location": "47.623098, -122.330184",
+                "Timezone": "Pacific Standard Time",
+                "UserSettings": {
+                    "Option 1": "value1",
+                    "Option 2": "value2"
+                }
+            },
+            "Rows": [{
+                "ID": 'recordId',
+                "Статус": "Водій: виконано"
+            }]
+        };
+
+        try {
+            const response = await axios.post(`${apiUrl}?applicationAccessKey=${apiKey}`, requestData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+
+
+            console.log(response);
+
+            if (response.status === 200) {
+                alert('Статус успешно обновлен');
+                fetchAppSheetData(); // Обновить данные после изменения статуса
+            } else {
+                alert('Ошибка при обновлении статуса');
+            }
+        } catch (error) {
+            console.error('Ошибка при обновлении статуса:', error);
+            alert('Ошибка при обновлении статуса');
+        }
+    }
+
+
 
     // Вызов функции для получения данных из AppSheet
     fetchAppSheetData();
